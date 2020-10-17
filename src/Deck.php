@@ -76,9 +76,9 @@ class Deck implements \IteratorAggregate, \ArrayAccess, \JsonSerializable {
     }
 
     /**
-     * Extracts data from manual array input
+     * Extracts data from manual array input, false if invalid data found
      * @param array $cards
-     * @return array
+     * @return array|bool
      */
     private function extractData($cards) {
         $arr = [];
@@ -87,7 +87,7 @@ class Deck implements \IteratorAggregate, \ArrayAccess, \JsonSerializable {
             if ($data) {
                 $arr[$card] = $data;
             } else {
-                die('Invalid Data');
+                return false;
             }
         }        
         return $arr;
@@ -128,9 +128,6 @@ class Deck implements \IteratorAggregate, \ArrayAccess, \JsonSerializable {
      * @return boolean
      */
     public function isStraight($cards) {
-        if(count($cards) < 5 || count($cards) > 5) {
-            return false;
-        }
         $cards_data = $this->extractData($cards);
         $ranks = $this->extractRanking($cards_data);
         if (in_array(13, $ranks)) {
