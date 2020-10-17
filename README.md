@@ -22,4 +22,6 @@ Using cli
 
 Using cli
 
-> php index_partb.php
+> php index_partb.php 'Qs','As','Ks','Js','10s'
+> php index_partb.php 'Qs','As','Ks','Js','10d'
+> php index_partb.php 'Qs','3c','9s','Js','10d'
