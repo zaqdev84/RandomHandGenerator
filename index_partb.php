@@ -12,7 +12,7 @@ if (!isset($argv[1])) {
 } else {
     $randomCards = explode(',', $argv[1]);
     if(count($randomCards) !=5){
-        echo "Script execution failed, missing input parameters, check usage and retry.";
+        echo "Script execution failed, missing input parameters, check usage and retry.\n";
         exit;
     }
 }
