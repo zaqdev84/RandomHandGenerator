@@ -87,6 +87,7 @@ class Deck implements \IteratorAggregate, \ArrayAccess, \JsonSerializable {
                 die('Invalid Data');
             }
         }
+        //var_dump($arr);
         return $arr;
     }
 
@@ -96,7 +97,7 @@ class Deck implements \IteratorAggregate, \ArrayAccess, \JsonSerializable {
      * @return array
      */
     private function sanitizeData($data) {
-        if (count($data) > 3 || count($data) < 2 || intval($data[0] . $data[1]) > 13) {
+        if (count($data) > 3 || count($data) < 2 || intval($data[0] . $data[1]) >= 13 || (array_key_exists(strtoupper($data[1]), $this->cardSet) && count($data) == 2) || (isset($data[2]) && array_key_exists(strtoupper($data[2]), $this->cardSet) && count($data) == 3)) {
             return false;
         } else if (count($data) == 2) {
             return array('rank' => $this->cardSet[$data[0]], 'suite' => $data[1]);
