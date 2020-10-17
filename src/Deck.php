@@ -71,6 +71,107 @@ class Deck implements \IteratorAggregate, \ArrayAccess, \JsonSerializable {
         asort($random);
         return $random;
     }
+    
+    /**
+     * Extracts data from manual array input
+     * @param array $cards
+     * @return array
+     */
+    private function extractData(array $cards): array {
+        $arr = [];
+        foreach ($cards as $key => $card) {
+            $data = $this->sanitizeData(str_split($card));
+            if ($data) {
+                $arr[$card] = $data;
+            } else {
+                die('Invalid Data');
+            }
+        }
+        return $arr;
+    }
+    
+    /**
+     * Sanitizes data and return array with suite and ranking of input array
+     * @param array $data
+     * @return array
+     */
+    private function sanitizeData(array $data): array {
+        if (count($data) > 3 || count($data) < 2 || intval($data[0] . $data[1]) > 13) {
+            return false;
+        } else if (count($data) == 2) {
+            return array('rank' => $this->cardSet[$data[0]], 'suite' => $data[1]);
+        } else {
+            return array('rank' => $this->cardSet[$data[0] . $data[1]], 'suite' => $data[2]);
+        }
+    }
+    /**
+     * Extracts ranking of cards of given array
+     * @param array $cards
+     * @return array
+     */
+    private function extractRanking(array $cards): array {
+        $arr = [];
+        foreach ($cards as $card) {
+            $arr[] = $card['rank'];
+        }
+        sort($arr);
+        return $arr;
+    }
+
+    /**
+     * Verifies if the set of Array provided is a straight or not.
+     * @param array $cards
+     * @return boolean
+     */
+    public function isStraight(array $cards) {
+        $cards_data = $this->extractData($cards);
+        $ranks = $this->extractRanking($cards_data);        
+        if (in_array(13, $ranks)) {
+            $testRank = $ranks[0] + 1;            
+            for ($i = 1; $i < count($ranks) - 1; $i++) {
+                if ($ranks[$i] != $testRank) {
+                    return false;
+                }
+                $testRank++;
+            }
+            return ($testRank-- == $ranks[count($ranks) - 1]) ? true : ($ranks[0] == 1) ? true : false;
+        } else {
+            $testRank = $ranks[0] + 1;
+            for ($i = 1; $i < count($ranks); $i++) {
+                if ($ranks[$i] != $testRank) {
+                    return false;
+                }
+                $testRank++;
+            }
+        }
+        return true;
+    }
+    
+    /**
+     * Verifies if the set of Array provided is a flush or not.
+     * @param array $cards
+     * @return bool
+     */
+    public function isFlush(array $cards): bool {
+        $cards_data = $this->extractData($cards);
+
+        $arr = [];
+        foreach ($cards_data as $card) {
+            $arr[] = $card['suite'];
+        }
+        $suite_count = array_count_values($arr);
+        return (count($suite_count) == 1) ? true : false;
+    }
+    
+    
+    /**
+     * Verifies if the set of Array provided is a flush and a straight or not.
+     * @param array $cards
+     * @return bool
+     */
+    public function isStraightFlush(array $cards): bool {
+        return ($this->isFlush($cards) && $this->isStraight($cards)) ? true : false;
+    }
 
     /**
      * Used by IteratorAggregate to loop over the object.
