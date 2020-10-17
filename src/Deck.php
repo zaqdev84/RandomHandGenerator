@@ -53,6 +53,9 @@ class Deck implements \IteratorAggregate, \ArrayAccess, \JsonSerializable {
      * @return array
      */
     public function getRandomCards($numberOfCards = 52) {
+        if($numberOfCards < 1 || $numberOfCards > 52) {
+            return false;
+        }
         for ($i = 0; $i < $numberOfCards; $i++) {
             $random[] = $this->deck[$i]->number() . $this->deck[$i]->suit();
             $this->randomKeys[] = $i;
@@ -125,6 +128,9 @@ class Deck implements \IteratorAggregate, \ArrayAccess, \JsonSerializable {
      * @return boolean
      */
     public function isStraight($cards) {
+        if(count($cards) < 5 || count($cards) > 5) {
+            return false;
+        }
         $cards_data = $this->extractData($cards);
         $ranks = $this->extractRanking($cards_data);
         if (in_array(13, $ranks)) {
