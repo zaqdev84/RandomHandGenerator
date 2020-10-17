@@ -52,7 +52,7 @@ class Deck implements \IteratorAggregate, \ArrayAccess, \JsonSerializable {
      * @param int $numberOfCards
      * @return array
      */
-    public function getRandomCards($numberOfCards) {
+    public function getRandomCards($numberOfCards = 52) {
         for ($i = 0; $i < $numberOfCards; $i++) {
             $random[] = $this->deck[$i]->number() . $this->deck[$i]->suit();
             $this->randomKeys[] = $i;
@@ -86,8 +86,7 @@ class Deck implements \IteratorAggregate, \ArrayAccess, \JsonSerializable {
             } else {
                 die('Invalid Data');
             }
-        }
-        //var_dump($arr);
+        }        
         return $arr;
     }
 
