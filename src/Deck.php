@@ -59,7 +59,6 @@ class Deck implements \IteratorAggregate, \ArrayAccess, \JsonSerializable {
         }
         return $random;
     }
-    
 
     /**
      * Returns randomized cards with ranking
