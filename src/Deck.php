@@ -53,7 +53,7 @@ class Deck implements \IteratorAggregate, \ArrayAccess, \JsonSerializable {
      * @return array
      */
     public function getRandomCards($numberOfCards = 52) {
-        if($numberOfCards < 1 || $numberOfCards > 52) {
+        if ($numberOfCards < 1 || $numberOfCards > 52) {
             return false;
         }
         for ($i = 0; $i < $numberOfCards; $i++) {
@@ -74,81 +74,14 @@ class Deck implements \IteratorAggregate, \ArrayAccess, \JsonSerializable {
         asort($random);
         return $random;
     }
-
-    /**
-     * Extracts data from manual array input, false if invalid data found
-     * @param array $cards
-     * @return array|bool
-     */
-    private function extractData($cards) {
-        $arr = [];
-        foreach ($cards as $key => $card) {
-            $data = $this->sanitizeData(str_split($card));
-            if ($data) {
-                $arr[$card] = $data;
-            } else {
-                return false;
-            }
-        }        
-        return $arr;
-    }
-
-    /**
-     * Sanitizes data and return array with suite and ranking of input array
-     * @param array $data
-     * @return array
-     */
-    private function sanitizeData($data) {
-        if (count($data) > 3 || count($data) < 2 || intval($data[0] . $data[1]) >= 13 || (array_key_exists(strtoupper($data[1]), $this->cardSet) && count($data) == 2) || (isset($data[2]) && array_key_exists(strtoupper($data[2]), $this->cardSet) && count($data) == 3)) {
-            return false;
-        } else if (count($data) == 2) {
-            return array('rank' => $this->cardSet[$data[0]], 'suite' => $data[1]);
-        } else {
-            return array('rank' => $this->cardSet[$data[0] . $data[1]], 'suite' => $data[2]);
-        }
-    }
-
-    /**
-     * Extracts ranking of cards of given array
-     * @param array $cards
-     * @return array
-     */
-    private function extractRanking($cards) {
-        $arr = [];
-        foreach ($cards as $card) {
-            $arr[] = $card['rank'];
-        }
-        sort($arr);
-        return $arr;
-    }
-
+    
     /**
      * Verifies if the set of Array provided is a straight or not.
      * @param array $cards
      * @return boolean
      */
     public function isStraight($cards) {
-        $cards_data = $this->extractData($cards);
-        $ranks = $this->extractRanking($cards_data);
-        if (in_array(13, $ranks)) {
-            $testRank = $ranks[0] + 1;
-            for ($i = 1; $i < count($ranks) - 1; $i++) {
-                if ($ranks[$i] != $testRank) {
-                    return false;
-                }
-                $testRank++;
-            }
-            return ($testRank-- == $ranks[count($ranks) - 1]) ? true : ($ranks[0] == 1) ? true : false;
-        } else {
-            $testRank = $ranks[0] + 1;
-            for ($i = 1; $i < count($ranks); $i++) {
-                if ($ranks[$i] != $testRank) {
-                    return false;
-                }
-                $testRank++;
-            }
-        }
-        return true;
+        return (preg_match("/[" . join($cards) . "]{5}/i", 'a234567891jqka')) ? true : false;
     }
 
     /**
@@ -157,14 +90,7 @@ class Deck implements \IteratorAggregate, \ArrayAccess, \JsonSerializable {
      * @return bool
      */
     public function isFlush($cards) {
-        $cards_data = $this->extractData($cards);
-
-        $arr = [];
-        foreach ($cards_data as $card) {
-            $arr[] = $card['suite'];
-        }
-        $suite_count = array_count_values($arr);
-        return (count($suite_count) == 1) ? true : false;
+        return (preg_match('/^[^cdhs]*([cdhs])(?>.*?\1){4}(?!.*\1)$/i', join($cards))) ? true : false;
     }
 
     /**

@@ -3,23 +3,23 @@
 use PHPUnit\Framework\TestCase;
 
 class DeckTest extends TestCase {
-    
+
     private $deck;
-    
+
     protected function setUp(): void {
         $this->deck = new Shuffler\Deck();
     }
-    
+
     public function testDeckObject() {
-        
+
         $this->assertIsObject($this->deck);
     }
 
-    public function testGenerateRandomCardsReturnsArray() {        
+    public function testGenerateRandomCardsReturnsArray() {
         $cards = $this->deck->getRandomCards();
-        $this->assertIsArray($cards);        
+        $this->assertIsArray($cards);
     }
-    
+
     public function testGenerateRandomCardsDoesNotReturnsArray() {
 
         //Must not be able to get zero cards.
@@ -36,9 +36,9 @@ class DeckTest extends TestCase {
         $this->assertIsNotArray($cardsOver52);
         $this->assertFalse($cardsOver52);
     }
-    
-    public function testGenerateRandomRankedCardsReturnsArray() {        
-        
+
+    public function testGenerateRandomRankedCardsReturnsArray() {
+
         $cards = $this->deck->getRandomCards(5);
         $randomCards = $this->deck->getRandomRankedCards();
         $this->assertIsArray($randomCards);
@@ -48,69 +48,66 @@ class DeckTest extends TestCase {
         $cardsBelowZeroRandom = $this->deck->getRandomRankedCards();
         $this->assertIsArray($cardsBelowZeroRandom);
     }
-    
+
     public function testIsStraight() {
 
         $straightCards1 = ['Qh', 'Ad', 'Kc', 'Js', '10s'];
-        $this->assertTrue($this->deck->isStraight($straightCards1));
+        $this->assertTrue($this->deck->isStraight($straightCards1), "assertion 1");
 
         $straightCards2 = ['9h', '7d', '6c', '5s', '8s'];
-        $this->assertTrue($this->deck->isStraight($straightCards2));
+        $this->assertTrue($this->deck->isStraight($straightCards2), "assertion 2");
 
         $straightCards3 = ['5h', 'Ad', '3c', '2s', '4s'];
-        $this->assertTrue($this->deck->isStraight($straightCards3));
+        $this->assertTrue($this->deck->isStraight($straightCards3), "assertion 3");
 
         //shorter parameters
         $straightCards4 = ['Qh', 'Ad', 'Kc', 'Js'];
-        $this->assertTrue($this->deck->isStraight($straightCards4));
+        $this->assertFalse($this->deck->isStraight($straightCards4), "assertion 4");
 
         //extra long
         $straightCards5 = ['Qh', 'Ad', 'Kc', 'Js', '10s', '7c', '5d', '9h', '6s', '8h'];
-        $this->assertTrue($this->deck->isStraight($straightCards5));
+        $this->assertTrue($this->deck->isStraight($straightCards5), "assertion 5");
 
         //Not Straight
         $notStraightCards = ['Qh', 'Ad', 'Kc', 'Js', '9s'];
-        $this->assertFalse($this->deck->isStraight($notStraightCards));
-        
+        $this->assertFalse($this->deck->isStraight($notStraightCards), "assertion 6");
     }
-    
+
     public function testIsFlush() {
-        
+
         // valid flush
         $flushCards = ['Qc', 'Ac', 'Kc', 'Jc', '10c'];
-        $this->assertTrue($this->deck->isFlush($flushCards));
-        
+        $this->assertTrue($this->deck->isFlush($flushCards), "case 1 flush");
+
         //shorter parameters, valid flush
         $shorterParamFlush = ['Qd', 'Ad', 'Kd', 'Jd'];
-        $this->assertTrue($this->deck->isStraight($shorterParamFlush));
+        $this->assertFalse($this->deck->isFlush($shorterParamFlush), "case 2 flush");
 
         //extra long, valid flush
         $extraLongParamFlush = ['Qh', 'Ah', 'Kh', 'Jh', '10h', '7h', '5h', '9h', '6h', '8h'];
-        $this->assertTrue($this->deck->isStraight($extraLongParamFlush));
+        $this->assertFalse($this->deck->isFlush($extraLongParamFlush), "case 3 flush");
 
         // invalid flush
         $nonFlushCards = ['9h', '7d', '6c', '5s', '8s'];
-        $this->assertFalse($this->deck->isFlush($nonFlushCards));        
+        $this->assertFalse($this->deck->isFlush($nonFlushCards), "case 4 flush");
     }
-        
+
     public function testIsStraightFlush() {
-        
+
         $straightFlushCards = ['Qc', 'Ac', 'Kc', 'Jc', '10c'];
-        
+
         $this->assertTrue($this->deck->isStraightFlush($straightFlushCards));
-        
+
         //non-straight but flush
         $straightFlushCards = ['5c', 'Ac', 'Kc', 'Jc', '10c'];
-        
+
         $this->assertFalse($this->deck->isStraightFlush($straightFlushCards));
-        
-        
+
+
         //non-flush but straight
         $straightFlushCards = ['Qc', 'Ad', 'Kc', 'Jc', '10c'];
-        
+
         $this->assertFalse($this->deck->isStraightFlush($straightFlushCards));
-        
-        
     }
 
 }
