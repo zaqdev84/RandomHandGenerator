@@ -12,7 +12,7 @@ class DeckTest extends TestCase {
 
     public function testDeckObject() {
 
-        $this->assertIsObject($this->deck);
+        $this->assertInstanceOf('Shuffler\Deck', $this->deck);
     }
 
     public function testGenerateRandomCardsReturnsArray() {
